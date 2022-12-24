@@ -9,7 +9,7 @@ use tokio::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 pub struct Singleton<T: Sync + Send>(RwLock<Option<T>>);
 
 impl<T: Sync + Send> Singleton<T> {
-    pub const fn new() -> Self {
+    pub const fn uninitialized() -> Self {
         Self(RwLock::const_new(None))
     }
 
@@ -25,7 +25,7 @@ impl<T: Sync + Send> Singleton<T> {
             .map(|_| SingletonLifetimeGuard(self))
     }
 
-    pub async fn init(&self, value: T) -> anyhow::Result<SingletonLifetimeGuard<T>> {
+    pub async fn initialize(&self, value: T) -> anyhow::Result<SingletonLifetimeGuard<T>> {
         let mut opt = self.0.write().await;
         if opt.is_none() {
             *opt = Some(value);
@@ -35,11 +35,11 @@ impl<T: Sync + Send> Singleton<T> {
         }
     }
 
-    pub async fn is_init(&self) -> bool {
+    pub async fn is_initialized(&self) -> bool {
         self.0.read().await.is_some()
     }
 
-    pub(crate) fn blocking_deinit(&self) {
+    pub(crate) fn blocking_uninitialize(&self) {
         thread::scope(|s| s.spawn(|| self.0.blocking_write().take()).join().unwrap());
     }
 
