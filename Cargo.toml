@@ -1,0 +1,11 @@
+[package]
+name = "initon"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.68"
+tokio = { version = "1.23.0", features = ["parking_lot", "sync"] }
+
+[dev-dependencies]
+tokio = { version = "1.23.0", features = ["rt-multi-thread", "macros"] }
