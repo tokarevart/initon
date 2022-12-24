@@ -11,7 +11,7 @@ async fn create_init() {
 
 #[tokio::test]
 async fn create_with() {
-    let singleton = Singleton::new_with(vec![0, 1]);
+    let singleton = Singleton::initialized(vec![0, 1]);
     assert!(singleton.is_initialized().await);
     let life = singleton.lifetime_guard().await.unwrap();
     drop(life);
@@ -28,5 +28,5 @@ async fn freed_resources() {
         }
     }
 
-    let _ = Singleton::new_with(PanicOnDrop);
+    let _ = Singleton::initialized(PanicOnDrop);
 }

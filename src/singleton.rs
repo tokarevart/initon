@@ -13,7 +13,7 @@ impl<T: Sync + Send> Singleton<T> {
         Self(RwLock::const_new(None))
     }
 
-    pub const fn new_with(value: T) -> Self {
+    pub const fn initialized(value: T) -> Self {
         Self(RwLock::const_new(Some(value)))
     }
 
